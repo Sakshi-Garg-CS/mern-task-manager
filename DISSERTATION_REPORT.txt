@@ -1,0 +1,784 @@
+================================================================================
+                         COVER PAGE (auto in Word)
+================================================================================
+
+Report Title      : Web-Based Task Management System
+Student Name      : _______________________________________________
+Enrollment No.    : _______________________________________________
+Programme         : _______________________________________________
+Course Code       : _______________________________________________
+Guide / Supervisor: _______________________________________________
+Supervisor Email  : _______________________________________________
+Chairperson       : _______________________________________________
+Supervisor Designation : Professor
+Organization      : Department of Computer Science and Applications, Kurukshetra University
+Project Start Date: _______________________________________________
+Project End Date  : _______________________________________________
+Degree Name       : _______________________________________________
+CA Reference No   : CA/26/________
+Session / Year    : _______________________________________________
+Date of Submission: _______________________________________________
+
+(University/Department on cover: Kurukshetra University, DCSA — fixed in Word)
+
+
+================================================================================
+                 DECLARATION BY THE CANDIDATE (auto in Word)
+================================================================================
+(Word builds this page from the fields at the top of this file.)
+
+
+================================================================================
+              CERTIFICATE FROM THE SUPERVISOR (auto in Word)
+================================================================================
+(Word builds this page from the fields at the top of this file.)
+
+
+================================================================================
+             CERTIFICATE FROM THE CHAIRPERSON (auto in Word)
+================================================================================
+(Word builds this page from the fields at the top of this file.)
+
+
+================================================================================
+                               ABSTRACT
+================================================================================
+
+In small offices and college project groups, work is often planned on phone
+calls or shared Excel files. After a few days it becomes hard to remember who
+is working on what, and whether the job is still pending or already done.
+That was the practical problem I wanted to solve.
+
+I built a browser-based Task Management System using MongoDB, Express, React,
+and Node.js. There are two login types. The admin creates tasks, picks team
+members, watches charts on the dashboard, and can download Excel sheets.
+Normal members log in and see only tasks assigned to them. They update work
+by ticking checklist items, and the status moves to In Progress or Completed
+without the admin changing it manually each time.
+
+Login is protected using JWT tokens and passwords are stored using bcrypt.
+I tested registration, task creation, assignment, checklist update, and
+report download on my own machine and on MongoDB Atlas. The final version
+runs stable for a small team size and is suitable as a demonstration
+prototype.
+
+Keywords: MERN, Task Management, React, REST API, MongoDB, JWT, RBAC
+
+
+================================================================================
+                            ACKNOWLEDGEMENTS
+================================================================================
+
+First of all, I would like to thank the Almighty for giving me strength and
+patience to complete this dissertation work on the Web-Based Task Management
+System.
+
+I owe a deep sense of gratitude to my project supervisor, _________________
+(Name of Supervisor), Department of Computer Science and Applications,
+Kurukshetra University, Kurukshetra, for valuable guidance at every stage of
+this project—from requirement analysis and database design to API development,
+testing, and preparation of this report. His/her suggestions helped me correct
+mistakes in the MERN implementation and improved the overall quality of the
+software.
+
+I am thankful to Prof. _________________ (Chairperson, DCSA) and all faculty
+members of the department for their academic support, timely instructions, and
+for providing the laboratory and internet facilities needed during development.
+
+I express my sincere thanks to my parents and family for their constant
+encouragement and moral support during my project and dissertation writing.
+
+I am also grateful to my friends and classmates who helped me test the
+application by registering as team members, creating sample tasks, and
+checking admin and member screens. Their feedback made the user interface
+easier to use.
+
+I acknowledge the developers and authors of open-source technologies used in
+this project—MongoDB, Express.js, React, Node.js, Mongoose, JWT, and related
+libraries—as well as the official online documentation, which I consulted
+whenever I faced errors in coding or database connectivity.
+
+Finally, I thank Kurukshetra University for giving me the opportunity to carry
+out this project work as part of my degree programme.
+
+
+================================================================================
+                         LIST OF ABBREVIATIONS
+================================================================================
+
+API     Application Programming Interface
+BCrypt  Password hashing algorithm used in Node.js
+CRUD    Create, Read, Update, Delete
+DFD     Data Flow Diagram
+ERD     Entity Relationship Diagram
+HTTP    Hypertext Transfer Protocol
+JSON    JavaScript Object Notation
+JWT     JSON Web Token
+MERN    MongoDB, Express.js, React, Node.js
+RBAC    Role-Based Access Control
+REST    Representational State Transfer
+UI      User Interface
+URL     Uniform Resource Locator
+XLSX    Excel file format (Office Open XML)
+
+
+================================================================================
+                          LIST OF FIGURES
+================================================================================
+
+Figure 8.1   Login screen
+Figure 8.2   Registration page (admin token and member signup)
+Figure 8.3   Admin dashboard with task counts
+Figure 8.4   Task distribution pie chart
+Figure 8.5   Priority level bar chart
+Figure 8.6   Recent tasks table
+Figure 8.7   Manage tasks page with filters
+Figure 8.8   Create task form
+Figure 8.9   Assign members popup
+Figure 8.10  Update task screen
+Figure 8.11  Team members page
+Figure 8.12  Member dashboard
+Figure 8.13  Member task list (All Tasks)
+Figure 8.14  Task detail – Pending state
+Figure 8.15  Task detail – In Progress state
+Figure 8.16  Task detail – Completed state
+Figure 8.17  Exported Excel report in MS Excel
+
+
+================================================================================
+                          LIST OF TABLES
+================================================================================
+
+Table 3.1    Functional requirements summary
+Table 3.2    Non-functional requirements summary
+Table 4.1    Users collection fields
+Table 4.2    Tasks collection fields
+Table 7.1    Test case design and results
+
+
+================================================================================
+                         TABLE OF CONTENTS
+================================================================================
+
+[In Word: References → Table of Contents → Automatic Table 1]
+
+1.  Cover Page
+2.  Declaration by the Candidate
+3.  Certificate from the Supervisor
+4.  Certificate from the Chairperson
+5.  Acknowledgements
+6.  List of Abbreviations, Figures, and Tables
+7.  Table of Contents
+8.  Introduction and Objectives
+9.  Tools and Environment Used
+10. Analysis Document
+11. Design Document
+12. Program Code
+13. Testing
+14. Input and Output Screens
+15. Limitations of the Project
+16. Future Scope and Applications
+17. Bibliography
+18. Similarity Report (Annexure)
+
+
+================================================================================
+          CHAPTER 1 – INTRODUCTION AND OBJECTIVES
+================================================================================
+
+1.1  Overview of the Project
+
+In small teams, work is often tracked on WhatsApp or Excel. When one person
+finishes a task but does not update the sheet, others still see it as pending.
+This causes delay and repeated status checking by the team lead.
+
+This project builds a Web-Based Task Management System using the MERN stack.
+After login, an admin creates tasks, assigns members, views dashboard charts,
+and downloads Excel reports. A member sees only assigned tasks and updates
+progress through a checklist; status changes automatically to Pending, In
+Progress, or Completed.
+
+Tools like Jira, ClickUp, and Trello already offer similar services, but they
+are commercial products whose source and database are not open for academic
+study. This dissertation develops a smaller custom system so that UI, REST API,
+JWT security, and MongoDB design can be explained in the viva. It is meant for
+small teams (about 5–50 users) as a learning prototype, not as a replacement
+for industry platforms.
+
+1.2  Problem Definition
+
+First, there is no shared board showing task name, priority, due date, and
+current status in one place. Second, the team lead cannot quickly see how many
+tasks are pending versus completed. Third, workers have no simple method to
+show progress except sending messages. Fourth, management sometimes needs a
+downloadable list for meetings, which a chat group cannot provide.
+
+1.3  Aim
+
+The aim is to plan, code, and test a task management web application where
+admin and member roles behave differently but use the same database.
+
+1.4  Objectives
+
+1. Collect requirements for admin and member screens.
+2. Design User and Task collections in MongoDB.
+3. Write REST APIs for authentication, tasks, and reports.
+4. Create React pages for dashboard, task cards, forms, and member views.
+5. Link checklist ticks to automatic status change on the server.
+6. Perform manual unit, integration, and system testing and document results.
+
+1.5  Scope
+
+The project targets small teams (about 5–50 users). Mobile apps, payment
+modules, Gantt scheduling, and email alerts are out of scope. Testing was done
+on Windows laptop using Chrome browser.
+
+1.6  Organisation of Report
+
+Chapter 2 lists tools and environment. Chapter 3 is the analysis document.
+Chapter 4 is design. Chapter 5 is implementation overview. Chapter 6 contains
+program code with comments. Chapter 7 is testing. Chapter 8 shows input and
+output screens. Chapters 9 and 10 discuss limitations and future scope.
+
+
+================================================================================
+          CHAPTER 2 – TOOLS AND ENVIRONMENT USED
+================================================================================
+
+2.1  Hardware Environment
+
+Processor: standard laptop CPU (Intel/AMD)
+RAM: 8 GB or above recommended
+Storage: sufficient for Node modules and MongoDB Atlas (cloud)
+Display: 1366×768 minimum for React UI
+
+2.2  Software and Platforms
+
+Operating System: Windows 11
+IDE: Visual Studio Code
+Runtime: Node.js (v26 used during final testing)
+Package manager: npm
+Database: MongoDB Atlas (cloud cluster)
+API testing: Postman, Chrome DevTools Network tab
+Browser: Google Chrome
+
+2.3  Programming Languages and Libraries
+
+JavaScript (ES6+) on both client and server
+HTML5 and CSS3 via React JSX
+Tailwind CSS for layout and colours
+React 18 with Vite build tool
+Express.js for REST API
+Mongoose ODM for MongoDB
+bcryptjs for password hashing
+jsonwebtoken for JWT authentication
+Axios for HTTP requests from React
+Recharts for pie and bar charts
+ExcelJS for .xlsx report generation on server
+Multer for profile image upload
+
+2.4  Development Environment Setup
+
+Backend runs on port 8000 (backend/server.js). Frontend runs on port 5173
+(Vite dev server). Environment variables are stored in backend/.env:
+MONGO_URI, JWT_SECRET, ADMIN_INVITE_TOKEN, PORT.
+
+
+================================================================================
+                    CHAPTER 3 – ANALYSIS DOCUMENT
+================================================================================
+
+3.1  Existing System Study
+
+Teams often use Excel or WhatsApp. Excel lacks real-time role control;
+WhatsApp lacks structured task fields and reports. Commercial tools (Trello,
+Asana) are powerful but not ideal for a full-stack academic explanation.
+
+3.2  Proposed System Overview
+
+A three-tier web application: React client, Express API, MongoDB database.
+Two roles — Admin and Member — with different menus and API filters.
+
+3.3  Functional Requirements
+
+Table 3.1 Functional requirements summary
+
++-------+------------------------------------------+------------------+
+| ID    | Requirement                              | Role             |
++-------+------------------------------------------+------------------+
+| FR1   | Register/login with JWT                  | Admin, Member      |
+| FR2   | Admin signup with invite token           | Admin              |
+| FR3   | Create/edit/delete tasks                 | Admin              |
+| FR4   | Assign multiple members to a task        | Admin              |
+| FR5   | Dashboard charts and counts              | Admin, Member*     |
+| FR6   | Filter tasks by status                   | Admin, Member*     |
+| FR7   | Member views only assigned tasks         | Member             |
+| FR8   | Checklist update auto-updates status     | Member             |
+| FR9   | Download Excel task/user reports         | Admin              |
+| FR10  | Team page with per-member task counts    | Admin              |
++-------+------------------------------------------+------------------+
+* Member dashboard shows only own assigned tasks.
+
+3.4  Non-Functional Requirements
+
+Table 3.2 Non-functional requirements summary
+
++-------+------------------------------------------+------------------+
+| ID    | Requirement                              | Target           |
++-------+------------------------------------------+------------------+
+| NFR1  | Response time for small dataset          | Within few sec   |
+| NFR2  | Password stored hashed (bcrypt)            | Yes              |
+| NFR3  | Unauthorized task access blocked           | Yes              |
+| NFR4  | Readable UI on laptop screen               | Yes              |
+| NFR5  | Code split into backend/frontend folders   | Yes              |
++-------+------------------------------------------+------------------+
+
+3.5  Data Flow Diagram (DFD)
+
+Level 0 (Context Diagram):
+  [Admin] ----> [Task Management System] ----> [MongoDB Database]
+  [Member] ---> [Task Management System] ----> [MongoDB Database]
+
+Level 1 (Main Processes):
+  1.0 Authenticate User (login/register, issue JWT)
+  2.0 Manage Tasks (create, update, delete, list)
+  3.0 Update Checklist Progress (member ticks items)
+  4.0 Generate Reports (Excel export)
+  5.0 Display Dashboard (statistics and charts)
+
+Data flows: login credentials → JWT; task JSON → database; checklist update
+→ recalculated status → database; filter request → task list JSON.
+
+3.6  Entity Relationship Diagram (ERD)
+
+Entities: USER, TASK.
+
+USER (userId PK, name, email, passwordHash, role, profileImageUrl)
+TASK (taskId PK, title, description, priority, status, dueDate, progress,
+      createdBy FK→USER, assignedTo FK→USER [multi-value array],
+      todoChecklist [embedded: text, completed], attachments[])
+
+Relationship: USER creates TASK (1:N). USER assigned to TASK (M:N via
+assignedTo array in MongoDB document model).
+
+3.7  Decision Table – Status from Checklist
+
++-------------+----------------+------------------+
+| Condition   | Some completed | All completed    |
++-------------+----------------+------------------+
+| Action      | In Progress    | Completed        |
++-------------+----------------+------------------+
+| Else        | Pending (none completed)          |
++-------------+----------------+------------------+
+
+3.8  Feasibility
+
+Technical feasibility: MERN is well documented. Economic feasibility: open
+source stack, Atlas free tier. Operational feasibility: browser-based, no
+install for end users. Risks: Atlas IP whitelist, port 8000 conflicts — both
+were faced and resolved during development.
+
+
+================================================================================
+                      CHAPTER 4 – DESIGN DOCUMENT
+================================================================================
+
+4.1  System Architecture
+
+Client layer: React + Vite (frontend/Task-Manager).
+Application layer: Express REST API (backend/).
+Data layer: MongoDB Atlas.
+
+4.2  Modular Design
+
+Backend modules: models (User, Task), controllers (auth, user, task,
+report), routes, middleware (auth, adminOnly), uploads folder.
+Frontend modules: pages (Admin, User), components (TaskCard, charts, forms),
+utils (API paths, image URL helper), context for auth state.
+
+4.3  Database Schema
+
+Table 4.1 Users collection fields
+
+Field            Type        Description
+name             String      Display name
+email            String      Unique login id
+password         String      Bcrypt hash
+role             String      admin | member
+profileImageUrl  String      Path under /uploads
+
+Table 4.2 Tasks collection fields
+
+Field            Type        Description
+title            String      Required task title
+description      String      Details
+priority         Enum        Low, Medium, High
+status           Enum        Pending, In Progress, Completed
+dueDate          Date        Deadline
+assignedTo       ObjectId[]  References to User
+createdBy        ObjectId    Admin who created task
+todoChecklist    Array       {text, completed}
+attachments      String[]    File URLs
+progress         Number      0–100 from checklist
+timestamps       Auto        createdAt, updatedAt
+
+4.4  Data Integrity Constraints
+
+Email unique in User schema. Task title required. Enum validation on priority
+and status. Member cannot call admin-only routes. Task access checks assignee
+id even when assignedTo is populated from Mongoose.
+
+4.5  API Design (REST)
+
+POST /api/auth/register, POST /api/auth/login
+GET/POST/PUT/DELETE /api/tasks/...
+PUT /api/tasks/:id/todo — checklist update
+GET /api/tasks/dashboard-data (admin)
+GET /api/tasks/user-dashboard-data (member)
+GET /api/reports/tasks, GET /api/reports/users
+
+4.6  User Interface Design
+
+Common layout: top bar, left sidebar with profile photo, white content card.
+Colour coding: purple pending, cyan in progress, green completed. Task cards
+show priority badge and due date. Forms use validation before submit. Toast
+messages confirm save and delete actions.
+
+
+================================================================================
+                   CHAPTER 5 – IMPLEMENTATION
+================================================================================
+
+5.1  Project Folder Structure
+
+TaskManager/backend — server.js, controllers, models, routes, middleware
+TaskManager/frontend/Task-Manager — React source (src/pages, components)
+TaskManager/scripts — database clear, docx generator
+TaskManager/README.md — setup instructions
+
+5.2  Backend Implementation
+
+server.js connects MongoDB then listens on PORT. taskController.js filters
+tasks: admin sees all; member uses assignedTo: { $in: [userId] }.
+updateTaskChecklist counts completed items and sets status automatically.
+isUserAssignedToTask compares ids when assignedTo contains populated objects.
+
+5.3  Frontend Implementation
+
+React Router paths for /admin/* and /user/*. PrivateRoute checks JWT role.
+Admin: Dashboard, ManageTask, CreateTask, UpdateTask, ManageUsers.
+Member: UserDashboard, MyTasks, ViewTaskDetails with live checklist API calls.
+
+5.4  Security Implementation
+
+JWT sent in Authorization header. Passwords hashed on register. Admin
+registration requires ADMIN_INVITE_TOKEN match. Members blocked from other
+users' tasks by server-side check on getTaskById.
+
+
+================================================================================
+                         CHAPTER 6 – PROGRAM CODE
+================================================================================
+
+Important source files are in the project folder. Below are representative
+modules with inline explanation (full code is in the submitted CD/folder).
+
+6.1  Task Schema (backend/models/Task.js)
+
+Defines title, priority, status, dueDate, assignedTo array, embedded
+todoChecklist sub-documents, and progress field. Mongoose timestamps record
+create/update time automatically.
+
+6.2  Checklist and Status Logic (excerpt – taskController.js)
+
+// When member updates checklist, server recalculates progress and status:
+const completed = todoChecklist.filter((item) => item.completed).length;
+const total = todoChecklist.length;
+const progress = total ? Math.round((completed / total) * 100) : 0;
+let status = "Pending";
+if (completed > 0 && completed < total) status = "In Progress";
+if (total > 0 && completed === total) status = "Completed";
+
+This rule removes the need for members to pick status manually from a dropdown.
+
+6.3  Assignee Authorization (excerpt – taskController.js)
+
+const isUserAssignedToTask = (task, userId) => {
+  return (task.assignedTo || []).some((entry) => {
+    const assigneeId = entry?._id ? entry._id.toString() : entry.toString();
+    return assigneeId === userId.toString();
+  });
+};
+
+This fix was required because Mongoose populate returns objects, not plain ids.
+
+6.4  React Route Guard (concept – PrivateRoute)
+
+If localStorage token is missing or role does not match route prefix, user is
+redirected to /login. Admin routes under /admin; member routes under /user.
+
+6.5  Excel Export (reportController.js)
+
+Uses ExcelJS to write columns: Task ID, Title, Description, Priority, Status,
+Due Date, Assigned To names. Admin downloads file from Manage Tasks page.
+
+Note for examiner: Complete indented source code with comments is available
+in the project directory. Paste additional pages in Word from VS Code if your
+guide asks for more lines than this summary section.
+
+
+================================================================================
+                            CHAPTER 7 – TESTING
+================================================================================
+
+7.1  Testing Levels
+
+Unit testing (informal): single functions such as assignee check and progress
+calculation verified with sample JSON objects.
+
+Integration testing: React form → Express API → MongoDB → response displayed
+on UI (e.g. create task, assign members, member checklist update).
+
+System testing: full workflow with two user accounts — admin creates task,
+member completes checklist, admin sees updated dashboard and Excel export.
+
+7.2  Test Case Design and Report
+
+Table 7.1 Test case design and results
+
++-----+----------------------------------------+------------------------+-------+
+| ID  | Input / Action                         | Expected output        | Result|
++-----+----------------------------------------+------------------------+-------+
+| T1  | Admin login correct credentials        | Admin dashboard        | Pass  |
+| T2  | Member login                           | User dashboard         | Pass  |
+| T3  | Create task empty title                  | Validation error       | Pass  |
+| T4  | Create task with 2 assignees           | Both see in My Tasks   | Pass  |
+| T5  | Member opens assigned task             | Detail page loads      | Pass  |
+| T6  | Member opens unassigned task by URL    | Access denied          | Pass  |
+| T7  | Tick 1 of 3 checklist items            | Status In Progress     | Pass  |
+| T8  | Tick all checklist items               | Status Completed       | Pass  |
+| T9  | Admin download task Excel              | .xlsx file downloads   | Pass  |
+| T10 | Admin delete task                      | Removed from list      | Pass  |
+| T11 | Wrong password login                   | Error message          | Pass  |
+| T12 | Register admin with wrong invite token | Remains member role    | Pass  |
++-----+----------------------------------------+------------------------+-------+
+
+7.3  Observation
+
+Charts update when database counts change. Checklist-driven status is easier
+for members than manual status selection. Performance was acceptable up to
+about thirty tasks in manual tests.
+
+
+================================================================================
+              CHAPTER 8 – INPUT AND OUTPUT SCREENS
+================================================================================
+
+This chapter contains screenshots of main input forms and output screens.
+Insert your running application screenshots at each placeholder below.
+
+
+[SCREENSHOT PLACEHOLDER – Figure 8.1]
+----------------------------------------------------------------------
+|  FIGURE 8.1 – Login Page (input: email, password)                  |
+|  [ Insert screenshot here ]                                        |
+----------------------------------------------------------------------
+
+
+[SCREENSHOT PLACEHOLDER – Figure 8.2]
+----------------------------------------------------------------------
+|  FIGURE 8.2 – Sign Up Page                                         |
+|  [ Insert screenshot – admin invite token field ]                  |
+----------------------------------------------------------------------
+
+
+[SCREENSHOT PLACEHOLDER – Figure 8.3]
+----------------------------------------------------------------------
+|  FIGURE 8.3 – Admin Dashboard (output: statistics)                 |
+----------------------------------------------------------------------
+
+
+[SCREENSHOT PLACEHOLDER – Figure 8.4]
+----------------------------------------------------------------------
+|  FIGURE 8.4 – Task Distribution Pie Chart                        |
+----------------------------------------------------------------------
+
+
+[SCREENSHOT PLACEHOLDER – Figure 8.5]
+----------------------------------------------------------------------
+|  FIGURE 8.5 – Priority Bar Chart                                   |
+----------------------------------------------------------------------
+
+
+[SCREENSHOT PLACEHOLDER – Figure 8.6]
+----------------------------------------------------------------------
+|  FIGURE 8.6 – Recent Tasks Table                                   |
+----------------------------------------------------------------------
+
+
+[SCREENSHOT PLACEHOLDER – Figure 8.7]
+----------------------------------------------------------------------
+|  FIGURE 8.7 – Manage Tasks with Filters                            |
+----------------------------------------------------------------------
+
+
+[SCREENSHOT PLACEHOLDER – Figure 8.8]
+----------------------------------------------------------------------
+|  FIGURE 8.8 – Create Task Form (input)                             |
+----------------------------------------------------------------------
+
+
+[SCREENSHOT PLACEHOLDER – Figure 8.9]
+----------------------------------------------------------------------
+|  FIGURE 8.9 – Assign Members Popup (input)                         |
+----------------------------------------------------------------------
+
+
+[SCREENSHOT PLACEHOLDER – Figure 8.10]
+----------------------------------------------------------------------
+|  FIGURE 8.10 – Update Task Page (input/output)                     |
+----------------------------------------------------------------------
+
+
+[SCREENSHOT PLACEHOLDER – Figure 8.11]
+----------------------------------------------------------------------
+|  FIGURE 8.11 – Team Members Page (output)                          |
+----------------------------------------------------------------------
+
+
+[SCREENSHOT PLACEHOLDER – Figure 8.12]
+----------------------------------------------------------------------
+|  FIGURE 8.12 – Member Dashboard (output)                          |
+----------------------------------------------------------------------
+
+
+[SCREENSHOT PLACEHOLDER – Figure 8.13]
+----------------------------------------------------------------------
+|  FIGURE 8.13 – Member My Tasks List (output)                       |
+----------------------------------------------------------------------
+
+
+[SCREENSHOT PLACEHOLDER – Figure 8.14]
+----------------------------------------------------------------------
+|  FIGURE 8.14 – Task Details – Pending (input: checklist)           |
+----------------------------------------------------------------------
+
+
+[SCREENSHOT PLACEHOLDER – Figure 8.15]
+----------------------------------------------------------------------
+|  FIGURE 8.15 – Task Details – In Progress                          |
+----------------------------------------------------------------------
+
+
+[SCREENSHOT PLACEHOLDER – Figure 8.16]
+----------------------------------------------------------------------
+|  FIGURE 8.16 – Task Details – Completed                            |
+----------------------------------------------------------------------
+
+
+[SCREENSHOT PLACEHOLDER – Figure 8.17]
+----------------------------------------------------------------------
+|  FIGURE 8.17 – Excel Report Opened in MS Excel (output)            |
+----------------------------------------------------------------------
+
+
+================================================================================
+              CHAPTER 9 – LIMITATIONS OF THE PROJECT
+================================================================================
+
+9.1  Technical Limitations
+
+The system was tested with a small number of users and tasks. Very large
+datasets may slow down chart rendering and list pages. There is no automated
+test suite (Jest/Cypress) in the submitted version.
+
+9.2  Functional Limitations
+
+Attachments are URL links only; direct file upload for task documents is not
+fully implemented. There is no email or SMS notification when a task is
+assigned. Password reset and two-factor authentication are not included.
+Real-time updates without page refresh use manual refetch, not WebSockets.
+
+9.3  Deployment Limitations
+
+The demo runs on localhost. Production deployment on HTTPS domain, backup
+policy, and server monitoring were not part of this phase. MongoDB free tier
+has storage and connection limits.
+
+9.4  Security Limitations
+
+JWT in localStorage is convenient for learning projects but has known XSS
+risks; httpOnly cookies would be stronger for production. Rate limiting on
+login API is not implemented.
+
+
+================================================================================
+           CHAPTER 10 – FUTURE SCOPE AND APPLICATIONS
+================================================================================
+
+10.1  Future Enhancements
+
+Email alert when admin assigns a task; push notifications; drag-and-drop task
+board; Gantt chart for deadlines; activity log per task; dark mode; mobile
+responsive layout improvement; Docker deployment; automated unit tests.
+
+10.2  Applications
+
+College project groups tracking assignment status; small software teams;
+internship task tracking; laboratory experiment scheduling in simplified form;
+any office that needs role-based task visibility and Excel reporting.
+
+
+================================================================================
+                           BIBLIOGRAPHY
+================================================================================
+
+[1] MongoDB Inc., MongoDB Documentation, https://www.mongodb.com/docs/
+    (Accessed: 2025)
+
+[2] Meta, React – Official Documentation, https://react.dev/
+    (Accessed: 2025)
+
+[3] Node.js Foundation, Node.js Docs, https://nodejs.org/en/docs/
+    (Accessed: 2025)
+
+[4] Express.js, Express Guide, https://expressjs.com/
+    (Accessed: 2025)
+
+[5] Mongoose, Mongoose Getting Started, https://mongoosejs.com/docs/
+    (Accessed: 2025)
+
+[6] JWT.io, JSON Web Token Introduction, https://jwt.io/introduction
+    (Accessed: 2025)
+
+[7] Recharts, Recharts Examples, https://recharts.org/
+    (Accessed: 2025)
+
+[8] _______________________________________________
+    (Add your course book / lecture notes here)
+
+[9] Kurukshetra University, Anti-plagiarism policy and project guidelines,
+    Department of Computer Science and Applications (Session document).
+
+
+================================================================================
+                    ANNEXURE – SIMILARITY REPORT
+================================================================================
+
+As per the anti-plagiarism policy of Kurukshetra University, the candidate
+and supervisor must ensure that the project report meets the permitted
+similarity limit before submission by 31st May (or date notified by DCSA).
+
++--------------------------------------------------------------------------+
+|  ANNEXURE PLACEHOLDER                                                    |
+|  [ Attach similarity / plagiarism report PDF here ]                      |
+|  Report generated from university-approved tool (e.g. URKUND / Turnitin  |
+|  or portal specified by DCSA in current session ).                       |
+|  Mention: Similarity index ______%   Date of report: __________           |
+|  Signed by candidate and countersigned by supervisor.                    |
++--------------------------------------------------------------------------+
+
+
+================================================================================
+                            END OF REPORT
+================================================================================
